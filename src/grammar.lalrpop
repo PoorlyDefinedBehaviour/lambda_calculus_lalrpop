@@ -2,7 +2,11 @@ use crate::ast::{Term};
 
 grammar;
 
+identifier = r"[[:alpha:]]";
+
 pub Term: Term = {
-  r"[[:alpha:]]" => Term::Var(String::from(<>)),
+  identifier => Term::Var(String::from(<>)),
+  //(λx.M)
+  "λ" <var: identifier> "." <body: Term> => Term::Abs(String::from(var), Box::new(body)),
 }
 
