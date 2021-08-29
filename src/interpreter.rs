@@ -75,10 +75,10 @@ fn eval_app(f: &Term, arg: &Term) -> Result<Term, String> {
     Term::Abs(var, body) => {
       let evaluated_arg = eval(arg)?;
 
-      // Given the expression ((λx.x) 2)
-      // we are recreating the expression (λx.x) with x substituted by 2
-      // (λx.x){2/x}
-      // ==> (λx.2)
+      // Given the expression ((λx.x) (λy.y))
+      // we are recreating the expression (λx.x) with x substituted by (λy.y)
+      // (λx.x){(λy.y)/x}
+      // ==> (λ(λy.y).(λy.y))
       Ok(substitute(body, var, &evaluated_arg))
     }
     _ => Err(format!("tried to apply {:?} to {:?}", f, arg)),
