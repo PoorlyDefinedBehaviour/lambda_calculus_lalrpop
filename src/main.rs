@@ -3,12 +3,8 @@ pub mod grammar;
 
 use ast::Term;
 
-use lalrpop_util::ParseError;
-
 fn main() {
-  // λ
-  // (λx.M)
-  let term = grammar::TermParser::new().parse("λx.x");
+  let term = grammar::TermParser::new().parse("((λx.x) y)");
 
   dbg!(&term);
 }
@@ -16,26 +12,41 @@ fn main() {
 mod tests {
   use super::*;
 
+  use Term::*;
+
   #[test]
   fn parse_term() {
     let term = grammar::TermParser::new().parse("x");
 
-    let expected = Ok(Term::Var(String::from("x")));
+    let expected = Ok(Var(String::from("x")));
 
     assert_eq!(term, expected);
   }
 
   #[test]
   fn parse_abs() {
-    let term = grammar::TermParser::new().parse("λx.x");
+    let term = grammar::TermParser::new().parse("(λx.x)");
 
-    let expected = Ok(Term::Abs(
-      String::from("x"),
-      Box::new(Term::Var(String::from("x"))),
-    ));
-
-    dbg!(&term);
+    let expected = Ok(Abs(String::from("x"), Box::new(Var(String::from("x")))));
 
     assert_eq!(term, expected);
+  }
+
+  #[test]
+  fn parse_app() {
+    let tests = vec![(
+      "((λx.x) y)",
+      App(
+        Box::new(Abs(String::from("x"), Box::new(Var(String::from("x"))))),
+        Box::new(Var(String::from("y"))),
+      ),
+    )];
+
+    for (input, expected) in tests {
+      let term = grammar::TermParser::new().parse(input).unwrap();
+
+      dbg!(&term);
+      assert_eq!(term, expected);
+    }
   }
 }

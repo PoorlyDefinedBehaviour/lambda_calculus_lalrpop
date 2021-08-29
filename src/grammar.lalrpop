@@ -4,9 +4,17 @@ grammar;
 
 identifier = r"[[:alpha:]]";
 
+match {
+
+} else {
+
+  _
+}
+
 pub Term: Term = {
   identifier => Term::Var(String::from(<>)),
-  //(λx.M)
-  "λ" <var: identifier> "." <body: Term> => Term::Abs(String::from(var), Box::new(body)),
+  "(" <f: Term> <arg: Term> ")" => Term::App(Box::new(f), Box::new(arg)),
+  "(" "λ" <var: identifier> "." <body: Term> ")" => Term::Abs(String::from(var), Box::new(body)),
+  "(" <t: Term> ")" => t,
 }
 

@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.19.6"
-// sha3: f63e37ad712fe79408a74bd158d642f88bac4b89d2eee658526bd69d31a676
+// sha3: e5c05a12df827eef5648c2c7c70a3e781d8dc9be787a75466c59f7ad32c
 use crate::ast::{Term};
 #[allow(unused_extern_crates)]
 extern crate lalrpop_util as __lalrpop_util;
@@ -28,24 +28,36 @@ mod __parse__Term {
     }
     const __ACTION: &[i8] = &[
         // State 0
-        0, 2, 6,
+        2, 0, 0, 0, 8,
         // State 1
-        0, 0, 6,
+        2, 0, 0, 4, 8,
         // State 2
-        0, 2, 6,
+        2, 10, 0, 0, 8,
         // State 3
-        0, 0, 0,
+        0, 0, 0, 0, 8,
         // State 4
-        0, 0, 0,
+        2, 0, 0, 0, 8,
         // State 5
-        -4, 0, 0,
+        0, 0, 0, 0, 0,
         // State 6
-        3, 0, 0,
+        -1, -1, 0, 0, -1,
         // State 7
-        0, 0, 0,
+        -6, -6, -6, 0, -6,
+        // State 8
+        0, 12, 0, 0, 0,
+        // State 9
+        -4, -4, 0, 0, -4,
+        // State 10
+        0, 0, 5, 0, 0,
+        // State 11
+        -2, -2, 0, 0, -2,
+        // State 12
+        0, 14, 0, 0, 0,
+        // State 13
+        -3, -3, 0, 0, -3,
     ];
     fn __action(state: i8, integer: usize) -> i8 {
-        __ACTION[(state as usize) * 3 + integer]
+        __ACTION[(state as usize) * 5 + integer]
     }
     const __EOF_ACTION: &[i8] = &[
         // State 0
@@ -55,31 +67,47 @@ mod __parse__Term {
         // State 2
         0,
         // State 3
-        -3,
-        // State 4
-        -1,
-        // State 5
-        -4,
-        // State 6
         0,
+        // State 4
+        0,
+        // State 5
+        -5,
+        // State 6
+        -1,
         // State 7
+        -6,
+        // State 8
+        0,
+        // State 9
+        -4,
+        // State 10
+        0,
+        // State 11
         -2,
+        // State 12
+        0,
+        // State 13
+        -3,
     ];
     fn __goto(state: i8, nt: usize) -> i8 {
         match nt {
             0 => match state {
-                2 => 7,
-                _ => 3,
+                0 => 5,
+                2 => 8,
+                4 => 12,
+                _ => 2,
             },
             2 => match state {
-                1 => 6,
-                _ => 4,
+                3 => 10,
+                _ => 6,
             },
             _ => 0,
         }
     }
     fn __expected_tokens(__state: i8) -> alloc::vec::Vec<alloc::string::String> {
         const __TERMINAL: &[&str] = &[
+            r###""(""###,
+            r###"")""###,
             r###"".""###,
             r###""λ""###,
             r###"r#"[[:alpha:]]"#"###,
@@ -135,7 +163,7 @@ mod __parse__Term {
 
         #[inline]
         fn error_action(&self, state: i8) -> i8 {
-            __action(state, 3 - 1)
+            __action(state, 5 - 1)
         }
 
         #[inline]
@@ -200,7 +228,9 @@ mod __parse__Term {
         match *__token {
             Token(1, _) if true => Some(0),
             Token(2, _) if true => Some(1),
-            Token(0, _) if true => Some(2),
+            Token(3, _) if true => Some(2),
+            Token(4, _) if true => Some(3),
+            Token(0, _) if true => Some(4),
             _ => None,
         }
     }
@@ -213,8 +243,8 @@ mod __parse__Term {
     ) -> __Symbol<'input>
     {
         match __token_index {
-            0 | 1 | 2 => match __token {
-                Token(1, __tok0) | Token(2, __tok0) | Token(0, __tok0) if true => __Symbol::Variant0(__tok0),
+            0 | 1 | 2 | 3 | 4 => match __token {
+                Token(1, __tok0) | Token(2, __tok0) | Token(3, __tok0) | Token(4, __tok0) | Token(0, __tok0) if true => __Symbol::Variant0(__tok0),
                 _ => unreachable!(),
             },
             _ => unreachable!(),
@@ -271,6 +301,12 @@ mod __parse__Term {
                 __reduce1(input, __lookahead_start, __symbols, core::marker::PhantomData::<(&())>)
             }
             2 => {
+                __reduce2(input, __lookahead_start, __symbols, core::marker::PhantomData::<(&())>)
+            }
+            3 => {
+                __reduce3(input, __lookahead_start, __symbols, core::marker::PhantomData::<(&())>)
+            }
+            4 => {
                 // __Term = Term => ActionFn(0);
                 let __sym0 = __pop_Variant1(__symbols);
                 let __start = __sym0.0.clone();
@@ -278,8 +314,8 @@ mod __parse__Term {
                 let __nt = super::__action0::<>(input, __sym0);
                 return Some(Ok(__nt));
             }
-            3 => {
-                __reduce3(input, __lookahead_start, __symbols, core::marker::PhantomData::<(&())>)
+            5 => {
+                __reduce5(input, __lookahead_start, __symbols, core::marker::PhantomData::<(&())>)
             }
             _ => panic!("invalid action code {}", __action)
         };
@@ -342,11 +378,11 @@ mod __parse__Term {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Term = "λ", identifier, ".", Term => ActionFn(3);
+        // Term = "(", Term, Term, ")" => ActionFn(3);
         assert!(__symbols.len() >= 4);
-        let __sym3 = __pop_Variant1(__symbols);
-        let __sym2 = __pop_Variant0(__symbols);
-        let __sym1 = __pop_Variant0(__symbols);
+        let __sym3 = __pop_Variant0(__symbols);
+        let __sym2 = __pop_Variant1(__symbols);
+        let __sym1 = __pop_Variant1(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0.clone();
         let __end = __sym3.2.clone();
@@ -354,7 +390,50 @@ mod __parse__Term {
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
         (4, 0)
     }
+    pub(crate) fn __reduce2<
+        'input,
+    >(
+        input: &'input str,
+        __lookahead_start: Option<&usize>,
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
+        _: core::marker::PhantomData<(&'input ())>,
+    ) -> (usize, usize)
+    {
+        // Term = "(", "λ", identifier, ".", Term, ")" => ActionFn(4);
+        assert!(__symbols.len() >= 6);
+        let __sym5 = __pop_Variant0(__symbols);
+        let __sym4 = __pop_Variant1(__symbols);
+        let __sym3 = __pop_Variant0(__symbols);
+        let __sym2 = __pop_Variant0(__symbols);
+        let __sym1 = __pop_Variant0(__symbols);
+        let __sym0 = __pop_Variant0(__symbols);
+        let __start = __sym0.0.clone();
+        let __end = __sym5.2.clone();
+        let __nt = super::__action4::<>(input, __sym0, __sym1, __sym2, __sym3, __sym4, __sym5);
+        __symbols.push((__start, __Symbol::Variant1(__nt), __end));
+        (6, 0)
+    }
     pub(crate) fn __reduce3<
+        'input,
+    >(
+        input: &'input str,
+        __lookahead_start: Option<&usize>,
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
+        _: core::marker::PhantomData<(&'input ())>,
+    ) -> (usize, usize)
+    {
+        // Term = "(", Term, ")" => ActionFn(5);
+        assert!(__symbols.len() >= 3);
+        let __sym2 = __pop_Variant0(__symbols);
+        let __sym1 = __pop_Variant1(__symbols);
+        let __sym0 = __pop_Variant0(__symbols);
+        let __start = __sym0.0.clone();
+        let __end = __sym2.2.clone();
+        let __nt = super::__action5::<>(input, __sym0, __sym1, __sym2);
+        __symbols.push((__start, __Symbol::Variant1(__nt), __end));
+        (3, 0)
+    }
+    pub(crate) fn __reduce5<
         'input,
     >(
         input: &'input str,
@@ -386,6 +465,8 @@ mod __intern_token {
     pub fn new_builder() -> __lalrpop_util::lexer::MatcherBuilder {
         let __strs: &[(&str, bool)] = &[
             ("^([A-Za-z])", false),
+            ("^(\\()", false),
+            ("^(\\))", false),
             ("^(\\.)", false),
             ("^(λ)", false),
             (r"^(\s*)", true),
@@ -434,12 +515,41 @@ fn __action3<
 >(
     input: &'input str,
     (_, _, _): (usize, &'input str, usize),
+    (_, f, _): (usize, Term, usize),
+    (_, arg, _): (usize, Term, usize),
+    (_, _, _): (usize, &'input str, usize),
+) -> Term
+{
+    Term::App(Box::new(f), Box::new(arg))
+}
+
+#[allow(unused_variables)]
+fn __action4<
+    'input,
+>(
+    input: &'input str,
+    (_, _, _): (usize, &'input str, usize),
+    (_, _, _): (usize, &'input str, usize),
     (_, var, _): (usize, &'input str, usize),
     (_, _, _): (usize, &'input str, usize),
     (_, body, _): (usize, Term, usize),
+    (_, _, _): (usize, &'input str, usize),
 ) -> Term
 {
     Term::Abs(String::from(var), Box::new(body))
+}
+
+#[allow(unused_variables)]
+fn __action5<
+    'input,
+>(
+    input: &'input str,
+    (_, _, _): (usize, &'input str, usize),
+    (_, t, _): (usize, Term, usize),
+    (_, _, _): (usize, &'input str, usize),
+) -> Term
+{
+    t
 }
 
 pub trait __ToTriple<'input, > {
