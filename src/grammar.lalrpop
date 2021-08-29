@@ -1,0 +1,8 @@
+use crate::ast::{Term};
+
+grammar;
+
+pub Term: Term = {
+  r"[[:alpha:]]" => Term::Var(String::from(<>)),
+}
+
