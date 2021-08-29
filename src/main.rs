@@ -1,12 +1,15 @@
 pub mod ast;
-pub mod grammar;
+mod grammar;
+mod interpreter;
 
 use ast::Term;
 
 fn main() {
-  let term = grammar::TermParser::new().parse("((λx.x) y)");
+  let term = grammar::TermParser::new().parse("((λx.x) (λy.y))").unwrap();
 
   dbg!(&term);
+
+  dbg!(interpreter::eval(&term));
 }
 
 mod tests {
