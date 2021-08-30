@@ -1,7 +1,7 @@
 // auto-generated: "lalrpop 0.19.6"
-// sha3: 102cec32c5a92bf1c0cc309a16cc546db98ade3256b11cba17696a9b8b7ea09b
+// sha3: 5bd1a415b8efd81a9b8fe152a9f6167581e723f46a369b9dcc08ab44bcd6d90
 #![warn(unknown_lints)]
-#![allow(clippy)]
+#![allow(clippy::all)]
 use crate::ast::{Term};
 use lalrpop_util::ParseError;
 use std::str::FromStr;

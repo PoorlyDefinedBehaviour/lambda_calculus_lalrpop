@@ -1,5 +1,5 @@
 #![warn(unknown_lints)]
-#![allow(clippy)] 
+#![allow(clippy::all)] 
 use crate::ast::{Term};
 use lalrpop_util::ParseError;
 use std::str::FromStr;
