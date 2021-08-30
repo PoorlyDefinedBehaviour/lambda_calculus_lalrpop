@@ -7,8 +7,6 @@ use ast::Term;
 fn main() {
   let term = grammar::TermParser::new().parse("((λx.x) (λy.y))").unwrap();
 
-  dbg!(&term);
-
   match interpreter::eval(&term) {
     Err(message) => println!("{}", message),
     Ok(evaluated_term) => println!("{}", evaluated_term),

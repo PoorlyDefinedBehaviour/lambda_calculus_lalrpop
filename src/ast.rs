@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Term {
-  // TODO: add ints
+  Int(i32),
   Var(String),
   Abs(String, Box<Term>),
   App(Box<Term>, Box<Term>),
@@ -11,6 +11,7 @@ pub enum Term {
 impl Display for Term {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     match self {
+      Term::Int(i) => i.fmt(f),
       Term::Var(x) => x.fmt(f),
       Term::Abs(x, body) => {
         write!(f, "(λ")?;

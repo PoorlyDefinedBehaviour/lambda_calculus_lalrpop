@@ -1,4 +1,6 @@
 use crate::ast::{Term};
+use lalrpop_util::ParseError;
+use std::str::FromStr;
 
 grammar;
 
@@ -13,8 +15,13 @@ match {
 
 pub Term: Term = {
   identifier => Term::Var(String::from(<>)),
+  Int => Term::Int(<>),
   "(" <f: Term> <arg: Term> ")" => Term::App(Box::new(f), Box::new(arg)),
   "(" "λ" <var: identifier> "." <body: Term> ")" => Term::Abs(String::from(var), Box::new(body)),
   "(" <t: Term> ")" => t,
 }
 
+Int: i32 = <s: r"[0-9]+"> =>? {
+  i32::from_str(s)
+  .map_err(|_| ParseError::User{ error: "number is too big" })
+};

@@ -4,6 +4,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 
 pub fn eval(term: &Term) -> Result<Term, String> {
   match term {
+    Term::Int(_) => Ok(term.clone()),
     Term::Var(x) => Err(format!("undefined variable {}", x)),
     Term::Abs(_, _) => Ok(term.clone()),
     Term::App(f, arg) => eval_app(f, arg),
@@ -12,6 +13,7 @@ pub fn eval(term: &Term) -> Result<Term, String> {
 
 fn free_variables(term: &Term) -> HashSet<String> {
   match term {
+    Term::Int(_) => HashSet::new(),
     Term::Var(x) => {
       let mut set = HashSet::new();
       set.insert(x.clone());
@@ -38,6 +40,7 @@ fn gensym() -> String {
 
 fn substitute(term: &Term, var: &String, new_value: &Term) -> Term {
   match term {
+    Term::Int(i) => Term::Int(*i),
     Term::Var(x) => {
       if x == var {
         new_value.clone()
