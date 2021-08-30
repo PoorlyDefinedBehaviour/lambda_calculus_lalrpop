@@ -9,7 +9,10 @@ fn main() {
 
   dbg!(&term);
 
-  dbg!(interpreter::eval(&term));
+  match interpreter::eval(&term) {
+    Err(message) => println!("{}", message),
+    Ok(evaluated_term) => println!("{}", evaluated_term),
+  }
 }
 
 mod tests {
