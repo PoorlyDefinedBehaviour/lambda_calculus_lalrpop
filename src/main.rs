@@ -2,8 +2,14 @@ pub mod ast;
 mod grammar;
 mod interpreter;
 
+use ast::Term;
+
+fn parse(input: &str) -> Term {
+  grammar::TermParser::new().parse(input).unwrap()
+}
+
 fn main() {
-  let term = grammar::TermParser::new().parse("((λx.x) (λy.y))").unwrap();
+  let term = parse("((λx.x) (λy.y))");
 
   match interpreter::eval(&term) {
     Err(message) => println!("{}", message),
@@ -13,23 +19,26 @@ fn main() {
 
 #[cfg(test)]
 mod tests {
+  use super::*;
   use crate::ast::Term::*;
-  use crate::grammar;
+
+  #[test]
+  fn encode_true() {}
 
   #[test]
   fn parse_term() {
-    let term = grammar::TermParser::new().parse("x");
+    let term = parse("x");
 
-    let expected = Ok(Var(String::from("x")));
+    let expected = Var(String::from("x"));
 
     assert_eq!(term, expected);
   }
 
   #[test]
   fn parse_abs() {
-    let term = grammar::TermParser::new().parse("(λx.x)");
+    let term = parse("(λx.x)");
 
-    let expected = Ok(Abs(String::from("x"), Box::new(Var(String::from("x")))));
+    let expected = Abs(String::from("x"), Box::new(Var(String::from("x"))));
 
     assert_eq!(term, expected);
   }
@@ -45,7 +54,7 @@ mod tests {
     )];
 
     for (input, expected) in tests {
-      let term = grammar::TermParser::new().parse(input).unwrap();
+      let term = parse(input);
 
       assert_eq!(term, expected);
     }
@@ -56,7 +65,7 @@ mod tests {
     let tests = vec![("0", Int(0)), ("1", Int(1)), ("12345", Int(12345))];
 
     for (input, expected) in tests {
-      let term = grammar::TermParser::new().parse(input).unwrap();
+      let term = parse(input);
 
       assert_eq!(term, expected);
     }
