@@ -53,7 +53,7 @@ mod tests {
 
   #[test]
   fn parse_i32() {
-    let tests = vec![];
+    let tests = vec![("0", Int(0)), ("1", Int(1)), ("12345", Int(12345))];
 
     for (input, expected) in tests {
       let term = grammar::TermParser::new().parse(input).unwrap();
