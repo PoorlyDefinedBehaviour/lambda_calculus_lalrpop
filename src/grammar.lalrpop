@@ -1,3 +1,4 @@
+#![warn(unknown_lints)]
 #![allow(clippy)] 
 use crate::ast::{Term};
 use lalrpop_util::ParseError;

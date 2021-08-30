@@ -2,8 +2,6 @@ pub mod ast;
 mod grammar;
 mod interpreter;
 
-use ast::Term;
-
 fn main() {
   let term = grammar::TermParser::new().parse("((λx.x) (λy.y))").unwrap();
 
@@ -14,9 +12,8 @@ fn main() {
 }
 
 mod tests {
-  use super::*;
-
-  use Term::*;
+  use crate::ast::Term::*;
+  use crate::grammar;
 
   #[test]
   fn parse_term() {
@@ -49,7 +46,17 @@ mod tests {
     for (input, expected) in tests {
       let term = grammar::TermParser::new().parse(input).unwrap();
 
-      dbg!(&term);
+      assert_eq!(term, expected);
+    }
+  }
+
+  #[test]
+  fn parse_i32() {
+    let tests = vec![];
+
+    for (input, expected) in tests {
+      let term = grammar::TermParser::new().parse(input).unwrap();
+
       assert_eq!(term, expected);
     }
   }
