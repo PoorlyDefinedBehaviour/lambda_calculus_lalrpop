@@ -11,6 +11,7 @@ fn main() {
   }
 }
 
+#[cfg(test)]
 mod tests {
   use crate::ast::Term::*;
   use crate::grammar;
