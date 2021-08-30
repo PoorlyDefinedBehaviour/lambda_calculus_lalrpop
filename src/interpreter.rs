@@ -38,7 +38,7 @@ fn gensym() -> String {
   format!("${}", i)
 }
 
-fn substitute(term: &Term, var: &String, new_value: &Term) -> Term {
+fn substitute(term: &Term, var: &str, new_value: &Term) -> Term {
   match term {
     Term::Int(i) => Term::Int(*i),
     Term::Var(x) => {
