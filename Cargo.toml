@@ -13,4 +13,6 @@ lalrpop = "0.19.6"
 lalrpop-util = "0.19.6"
 regex = "1"
 
+[dev-dependencies]
+cargo-watch = "7.7.0"
 

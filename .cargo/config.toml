@@ -1,0 +1,2 @@
+[alias]
+tw = "watch -x clippy -x test"
