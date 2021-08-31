@@ -7,7 +7,59 @@ pub fn eval(term: &Term) -> Result<Term, String> {
     Term::Int(_) => Ok(term.clone()),
     Term::Var(x) => Err(format!("undefined variable {}", x)),
     Term::Abs(_, _) => Ok(term.clone()),
-    Term::App(f, arg) => eval_app(f, arg),
+    Term::App(f, arg) => eval_app(&eval(f)?, arg),
+  }
+}
+
+fn eval_app(f: &Term, arg: &Term) -> Result<Term, String> {
+  match f {
+    Term::Abs(var, body) => {
+      let evaluated_arg = eval(arg)?;
+
+      // Given the expression ((λx.x) (λy.y))
+      // we are recreating the expression (λx.x) with x substituted by (λy.y)
+      // (λx.x){(λy.y)/x}
+      // ==> (λ(λy.y).(λy.y))
+      eval(&substitute(body, var, &evaluated_arg))
+    }
+    _ => Err(format!("tried to apply {:?} to {:?}", f, arg)),
+  }
+}
+
+fn substitute(term: &Term, var: &str, new_value: &Term) -> Term {
+  match term {
+    Term::Int(i) => Term::Int(*i),
+    Term::Var(x) => {
+      if x == var {
+        new_value.clone()
+      } else {
+        term.clone()
+      }
+    }
+    Term::App(f, arg) => {
+      let f_with_substitutions = substitute(f, var, new_value);
+      let arg_with_substitutions = substitute(arg, var, new_value);
+
+      Term::App(
+        Box::new(f_with_substitutions),
+        Box::new(arg_with_substitutions),
+      )
+    }
+    Term::Abs(x, body) => {
+      if var == x {
+        term.clone()
+      } else if x != var && !free_variables(new_value).contains(x) {
+        Term::Abs(x.clone(), Box::new(substitute(body, var, new_value)))
+      } else {
+        let new_var = gensym();
+        let new_var_term = Term::Var(new_var);
+        let body_with_new_var = substitute(body, x, &new_var_term);
+        Term::App(
+          Box::new(new_var_term),
+          Box::new(substitute(&body_with_new_var, var, new_value)),
+        )
+      }
+    }
   }
 }
 
@@ -36,54 +88,4 @@ fn gensym() -> String {
   static COUNTER: AtomicUsize = AtomicUsize::new(0);
   let i = COUNTER.fetch_add(1, Ordering::Relaxed);
   format!("${}", i)
-}
-
-fn substitute(term: &Term, var: &str, new_value: &Term) -> Term {
-  match term {
-    Term::Int(i) => Term::Int(*i),
-    Term::Var(x) => {
-      if x == var {
-        new_value.clone()
-      } else {
-        term.clone()
-      }
-    }
-    Term::App(f, arg) => {
-      let f_with_substitutions = substitute(f, var, new_value);
-      let arg_with_substitutions = substitute(arg, var, new_value);
-
-      Term::App(
-        Box::new(f_with_substitutions),
-        Box::new(arg_with_substitutions),
-      )
-    }
-    Term::Abs(x, body) => {
-      if x != var && !free_variables(new_value).contains(x) {
-        Term::Abs(x.clone(), Box::new(substitute(body, var, new_value)))
-      } else {
-        let new_var = gensym();
-        let new_var_term = Term::Var(new_var);
-        let body_with_new_var = substitute(body, x, &new_var_term);
-        Term::App(
-          Box::new(new_var_term),
-          Box::new(substitute(&body_with_new_var, var, new_value)),
-        )
-      }
-    }
-  }
-}
-
-fn eval_app(f: &Term, arg: &Term) -> Result<Term, String> {
-  match f {
-    Term::Abs(var, body) => {
-      let evaluated_arg = eval(arg)?;
-
-      // Given the expression ((λx.x) (λy.y))
-      // we are recreating the expression (λx.x) with x substituted by (λy.y)
-      // (λx.x){(λy.y)/x}
-      // ==> (λ(λy.y).(λy.y))
-      Ok(substitute(body, var, &evaluated_arg))
-    }
-    _ => Err(format!("tried to apply {:?} to {:?}", f, arg)),
-  }
 }
