@@ -46,9 +46,7 @@ mod tests {
     ))
     .unwrap();
 
-    println!("{}", term);
-
-    assert_eq!(Int(3), term);
+    assert_eq!("(λt.(λf.t))", format!("{}", term));
   }
 
   #[test]

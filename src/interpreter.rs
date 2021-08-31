@@ -48,7 +48,7 @@ fn substitute(term: &Term, var: &str, new_value: &Term) -> Term {
     Term::Abs(x, body) => {
       if var == x {
         term.clone()
-      } else if x != var && !free_variables(new_value).contains(x) {
+      } else if !free_variables(new_value).contains(x) {
         Term::Abs(x.clone(), Box::new(substitute(body, var, new_value)))
       } else {
         let new_var = gensym();
