@@ -8,13 +8,6 @@ grammar;
 
 identifier = r"[[:alpha:]]";
 
-match {
-
-} else {
-
-  _
-}
-
 pub Term: Term = {
   identifier => Term::Var(String::from(<>)),
   Int => Term::Int(<>),
