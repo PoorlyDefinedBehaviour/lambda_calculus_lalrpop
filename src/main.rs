@@ -9,7 +9,9 @@ fn parse(input: &str) -> Term {
 }
 
 fn main() {
-  let term = parse("((λx.x) (λy.y))");
+  let term = parse("(((λx.(λy.x)) 1) 2)");
+
+  dbg!(&term);
 
   match interpreter::eval(&term) {
     Err(message) => println!("{}", message),
@@ -21,9 +23,33 @@ fn main() {
 mod tests {
   use super::*;
   use crate::ast::Term::*;
+  use crate::interpreter::eval;
 
   #[test]
-  fn encode_true() {}
+  fn encode_true() {
+    let term = eval(&parse("(((λx.(λy.x)) 1) 2)")).unwrap();
+
+    assert_eq!(Int(1), term);
+  }
+
+  #[test]
+  fn encode_false() {
+    let term = eval(&parse("(((λx.(λy.y)) 1) 2)")).unwrap();
+
+    assert_eq!(Int(2), term);
+  }
+
+  #[test]
+  fn encode_or() {
+    let term = eval(&parse(
+      "(((λa.(λb.((a (λt.(λf.t))) b))) (λt.(λf.t))) (λt.(λf.f)))",
+    ))
+    .unwrap();
+
+    println!("{}", term);
+
+    assert_eq!(Int(3), term);
+  }
 
   #[test]
   fn parse_term() {
