@@ -23,7 +23,7 @@ mod tests {
   fn check(input: &str, expected: &str) {
     let term = parse(input);
 
-    //assert_eq!(expected, format!("{}", substitution::eval(&term).unwrap()));
+    assert_eq!(expected, format!("{}", substitution::eval(&term).unwrap()));
 
     assert_eq!(expected, format!("{}", environment::eval(&term).unwrap()));
   }
