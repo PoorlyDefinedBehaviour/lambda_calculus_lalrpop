@@ -1,6 +1,6 @@
 pub mod ast;
 mod grammar;
-mod interpreter;
+mod substitution;
 
 use ast::Term;
 
@@ -11,9 +11,7 @@ fn parse(input: &str) -> Term {
 fn main() {
   let term = parse("(((λx.(λy.x)) 1) 2)");
 
-  dbg!(&term);
-
-  match interpreter::eval(&term) {
+  match substitution::eval(&term) {
     Err(message) => println!("{}", message),
     Ok(evaluated_term) => println!("{}", evaluated_term),
   }
@@ -23,7 +21,7 @@ fn main() {
 mod tests {
   use super::*;
   use crate::ast::Term::*;
-  use crate::interpreter::eval;
+  use crate::substitution::eval;
 
   #[test]
   fn encode_true() {
