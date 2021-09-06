@@ -41,12 +41,30 @@ mod tests {
 
   #[test]
   fn encode_or() {
-    let term = eval(&parse(
-      "(((λa.(λb.((a (λt.(λf.t))) b))) (λt.(λf.t))) (λt.(λf.f)))",
-    ))
-    .unwrap();
+    let tests = vec![
+      (
+        "(((λa.(λb.((a (λt.(λf.t))) b))) (λt.(λf.t))) (λt.(λf.f)))",
+        "(λt.(λf.t))",
+      ),
+      (
+        "(((λa.(λb.((a (λt.(λf.t))) b))) (λt.(λf.f))) (λt.(λf.t)))",
+        "(λt.(λf.t))",
+      ),
+      (
+        "(((λa.(λb.((a (λt.(λf.t))) b))) (λt.(λf.t))) (λt.(λf.t)))",
+        "(λt.(λf.t))",
+      ),
+      (
+        "(((λa.(λb.((a (λt.(λf.t))) b))) (λt.(λf.f))) (λt.(λf.f)))",
+        "(λt.(λf.f))",
+      ),
+    ];
 
-    assert_eq!("(λt.(λf.t))", format!("{}", term));
+    for (input, expected) in tests {
+      let term = eval(&parse(input)).unwrap();
+
+      assert_eq!(expected, format!("{}", term));
+    }
   }
 
   #[test]
