@@ -50,6 +50,34 @@ mod tests {
   }
 
   #[test]
+  fn encode_and() {
+    let tests = vec![
+      (
+        "(((λa.(λb.((a b) (λt.(λf.f))))) (λt.(λf.t))) (λt.(λf.f)))",
+        "(λt.(λf.f))",
+      ),
+      (
+        "(((λa.(λb.((a b) (λt.(λf.f))))) (λt.(λf.f))) (λt.(λf.t)))",
+        "(λt.(λf.f))",
+      ),
+      (
+        "(((λa.(λb.((a b) (λt.(λf.f))))) (λt.(λf.f))) (λt.(λf.f)))",
+        "(λt.(λf.f))",
+      ),
+      (
+        "(((λa.(λb.((a b) (λt.(λf.f))))) (λt.(λf.t))) (λt.(λf.t)))",
+        "(λt.(λf.t))",
+      ),
+    ];
+
+    for (input, expected) in tests {
+      let term = eval(&parse(input)).unwrap();
+
+      assert_eq!(expected, format!("{}", term));
+    }
+  }
+
+  #[test]
   fn parse_term() {
     let term = parse("x");
 
