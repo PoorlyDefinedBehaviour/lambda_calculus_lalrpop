@@ -1,6 +1,7 @@
 pub mod ast;
-mod grammar;
-mod substitution;
+pub mod environment;
+pub mod grammar;
+pub mod substitution;
 
 use ast::Term;
 
@@ -9,32 +10,32 @@ fn parse(input: &str) -> Term {
 }
 
 fn main() {
-  let term = parse("(((λx.(λy.x)) 1) 2)");
+  let term = parse("(((λa.(λb.(a b))) (λx.x)) 1)");
 
-  match substitution::eval(&term) {
-    Err(message) => println!("{}", message),
-    Ok(evaluated_term) => println!("{}", evaluated_term),
-  }
+  dbg!(environment::eval(&term).unwrap());
 }
 
 #[cfg(test)]
 mod tests {
   use super::*;
   use crate::ast::Term::*;
-  use crate::substitution::eval;
+
+  fn check(input: &str, expected: &str) {
+    let term = parse(input);
+
+    //assert_eq!(expected, format!("{}", substitution::eval(&term).unwrap()));
+
+    assert_eq!(expected, format!("{}", environment::eval(&term).unwrap()));
+  }
 
   #[test]
   fn encode_true() {
-    let term = eval(&parse("(((λx.(λy.x)) 1) 2)")).unwrap();
-
-    assert_eq!(Int(1), term);
+    check("(((λx.(λy.x)) 1) 2)", "1");
   }
 
   #[test]
   fn encode_false() {
-    let term = eval(&parse("(((λx.(λy.y)) 1) 2)")).unwrap();
-
-    assert_eq!(Int(2), term);
+    check("(((λx.(λy.y)) 1) 2)", "2");
   }
 
   #[test]
@@ -59,9 +60,7 @@ mod tests {
     ];
 
     for (input, expected) in tests {
-      let term = eval(&parse(input)).unwrap();
-
-      assert_eq!(expected, format!("{}", term));
+      check(input, expected);
     }
   }
 
@@ -87,9 +86,7 @@ mod tests {
     ];
 
     for (input, expected) in tests {
-      let term = eval(&parse(input)).unwrap();
-
-      assert_eq!(expected, format!("{}", term));
+      check(input, expected);
     }
   }
 
