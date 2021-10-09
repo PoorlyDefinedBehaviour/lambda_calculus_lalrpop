@@ -1,6 +1,6 @@
 use crate::ast;
 use std::collections::HashMap;
-use std::convert::{From, Into};
+use std::convert::From;
 use std::ops::Deref;
 
 type Environment = HashMap<String, Term>;
@@ -28,14 +28,14 @@ impl From<&ast::Term> for Term {
   }
 }
 
-impl Into<ast::Term> for Term {
-  fn into(self) -> ast::Term {
-    match self {
+impl From<Term> for ast::Term {
+  fn from(item: Term) -> ast::Term {
+    match item {
       Term::Int(x) => ast::Term::Int(x),
       Term::Var(x) => ast::Term::Var(x),
-      Term::Closure(_env, x, body) => ast::Term::Abs(x, Box::new(Self::into(*body))),
-      Term::Abs(x, body) => ast::Term::Abs(x, Box::new(Self::into(*body))),
-      Term::App(f, arg) => ast::Term::App(Box::new(Self::into(*f)), Box::new(Self::into(*arg))),
+      Term::Closure(_env, x, body) => ast::Term::Abs(x, Box::new(Self::from(*body))),
+      Term::Abs(x, body) => ast::Term::Abs(x, Box::new(Self::from(*body))),
+      Term::App(f, arg) => ast::Term::App(Box::new(Self::from(*f)), Box::new(Self::from(*arg))),
     }
   }
 }
@@ -51,9 +51,9 @@ fn eval_impl(env: &Environment, term: Term) -> Result<Term, String> {
     Term::Closure(_, _, _) => Ok(term.clone()),
     Term::App(f, arg) => match eval_impl(env, f.deref().clone())? {
       Term::Closure(mut closure_env, x, body) => {
-        let evaluated_arg = eval_impl(&env, *arg)?;
+        let evaluated_arg = eval_impl(env, *arg)?;
 
-        closure_env.insert(x.clone(), evaluated_arg);
+        closure_env.insert(x, evaluated_arg);
 
         eval_impl(&closure_env, *body)
       }
